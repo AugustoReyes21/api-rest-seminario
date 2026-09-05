@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Biblioteca · Laboratorio GraphQL</title>
+  <style>
+    :root{color-scheme:light;--ink:#152e3a;--muted:#566976;--line:#dbe3e6;--paper:#f4f7f7;--accent:#087568;--dark:#112c37}
+    *{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.45 system-ui,sans-serif}
+    header{padding:22px 32px;display:flex;align-items:center;justify-content:space-between;background:#fff;border-bottom:1px solid var(--line)}
+    h1{font-size:25px;letter-spacing:-.7px;margin:0}h1 span{font-weight:400;color:var(--muted)}.eyebrow{color:var(--accent);text-transform:uppercase;letter-spacing:2px;font-size:11px;font-weight:750;margin-bottom:5px}.tag{background:#e5f2ee;color:#126153;border-radius:30px;padding:7px 15px;font-size:13px}
+    .layout{display:grid;grid-template-columns:248px minmax(0,1fr);min-height:calc(100vh - 99px)}aside{padding:25px 16px;border-right:1px solid var(--line);background:#fff}nav{display:grid;gap:6px}.nav-label{margin:17px 12px 8px;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:1.3px}
+    button,input,textarea{font:inherit}button{cursor:pointer}.nav-button{width:100%;border:0;text-align:left;background:transparent;padding:12px 14px;border-radius:8px;color:var(--ink);font-size:14px}.nav-button:hover{background:#f0f5f4}.nav-button[aria-current="page"]{background:#e4f1ed;color:#075d51;font-weight:650}.aside-note{margin:30px 12px 0;font-size:12px;color:var(--muted);line-height:1.6}.aside-note a{color:var(--accent)}main{min-width:0;padding:26px 30px}.heading{display:flex;align-items:start;justify-content:space-between;gap:20px;margin-bottom:19px}h2{margin:0 0 5px;font-size:26px;letter-spacing:-.6px}.description{margin:0;color:var(--muted);font-size:14px;max-width:850px;min-height:21px}
+    .primary{border:0;background:var(--accent);color:#fff;border-radius:8px;padding:12px 20px;white-space:nowrap;font-size:14px;font-weight:650}.primary:hover{background:#075f55}.primary:disabled{opacity:.6;cursor:wait}.workspace{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}.panel{background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}.panel-title{padding:11px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;font-size:12px;font-weight:650}.panel-title span{color:var(--muted);font-weight:400}.operation-row{display:flex;align-items:center;gap:12px;padding:10px 15px;border-bottom:1px solid var(--line);font-size:12px;color:var(--muted)}input{border:1px solid var(--line);border-radius:5px;width:100%;padding:5px 8px;font-size:13px;color:var(--ink)}textarea,pre{font:16px/1.5 Consolas,"Cascadia Code",monospace;tab-size:2}textarea{display:block;width:100%;resize:vertical;border:0;outline-offset:-3px;color:var(--ink);background:#fff;padding:15px;white-space:pre;min-height:90px}#query{height:290px}#variables{height:170px}pre{white-space:pre-wrap;overflow-wrap:anywhere;margin:0;padding:17px}#response{height:520px;overflow:auto;background:var(--dark);color:#e5f3f3;font-size:16px}.result-status{font-size:12px;font-weight:500;color:var(--muted)}.result-status[data-state="success"]{color:#087568}.result-status[data-state="error"]{color:#a23625}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:14px}.metric{border:1px solid var(--line);background:#fff;border-radius:8px;padding:10px 12px}.metric strong{display:block;font-size:23px;font-weight:600;line-height:1.2}.metric span{font-size:11px;color:var(--muted)}.footnote{font-size:12px;color:var(--muted);margin:13px 0 0}.source{max-height:calc(100vh - 240px);overflow:auto;background:var(--dark);color:#e5f3f3;font-size:18px;line-height:1.6}.source-help{padding:13px 17px;background:#e4f1ed;font-size:14px;border-bottom:1px solid var(--line)}[hidden]{display:none!important}:focus-visible{outline:3px solid #409ec0;outline-offset:2px}
+    @media(min-width:1500px){#query{height:324px}#variables{height:196px}#response{height:534px}textarea{font-size:17px;line-height:1.4}#response{font-size:18px}}
+    @media(max-width:1050px){.layout{grid-template-columns:200px minmax(0,1fr)}main{padding:20px}.workspace{grid-template-columns:1fr}.heading{flex-wrap:wrap}.source{max-height:70vh}}@media(max-width:640px){header{padding:18px}.layout{display:block}aside{border-right:0;border-bottom:1px solid var(--line)}nav{grid-template-columns:1fr 1fr}.aside-note{display:none}h1{font-size:19px}.tag{display:none}}
+  </style>
+</head>
+<body>
+  <header><div><div class="eyebrow">Seminario · API tipada</div><h1>Biblioteca <span>/ Laboratorio GraphQL</span></h1></div><div class="tag">TypeScript + GraphQL Yoga · datos en memoria</div></header>
+  <div class="layout">
+    <aside aria-label="Navegación de ejemplos">
+      <div class="nav-label">Contrato público</div>
+      <nav><button class="nav-button" id="show-schema">Esquema GraphQL</button><button class="nav-button" id="show-implementation">Carga por lotes · N+1</button></nav>
+      <div class="nav-label">Operaciones con variables</div><nav id="scenarios"></nav>
+      <p class="aside-note">Cada ejecución envía una petición real a <code>POST /graphql</code>.<br><br><a href="/graphql">Abrir GraphiQL</a><br><a href="/schema.graphql">Ver SDL completo</a></p>
+    </aside>
+    <main>
+      <div class="heading"><div><h2 id="title">Cargando biblioteca…</h2><p class="description" id="description"></p></div><button class="primary" id="run" hidden>▶ Ejecutar operación</button></div>
+      <section id="source-view" class="panel" hidden aria-label="Código fuente">
+        <div class="source-help" id="source-help"></div><pre class="source" id="source-code" tabindex="0"></pre>
+      </section>
+      <section id="operation-view" hidden aria-label="Cliente GraphQL">
+        <div class="workspace">
+          <div class="panel"><div class="panel-title">SOLICITUD <span>POST /graphql</span></div><label class="operation-row">operationName <input id="operation-name" autocomplete="off" spellcheck="false"></label><textarea id="query" aria-label="Operación GraphQL" spellcheck="false"></textarea><div class="panel-title"><label for="variables">VARIABLES</label><span>JSON · entradas tipadas</span></div><textarea id="variables" spellcheck="false"></textarea></div>
+          <div><div class="panel"><div class="panel-title">RESPUESTA DEL SERVIDOR <output class="result-status" id="status" aria-live="polite">Sin ejecutar</output></div><pre id="response" tabindex="0" aria-label="Respuesta JSON">Selecciona los campos y ejecuta la operación.</pre></div><div class="metrics" aria-label="Accesos a datos de esta petición"><div class="metric"><strong id="bookReads">—</strong><span>Lecturas de libros</span></div><div class="metric"><strong id="authorBatchReads">—</strong><span>Lotes de autores</span></div><div class="metric"><strong id="authorKeysLoaded">—</strong><span>Autores únicos cargados</span></div></div></div>
+        </div><p class="footnote">Los contadores proceden de extensions.dataAccess y se reinician en cada petición. Tamaño máximo de página: 20.</p>
+      </section>
+    </main>
+  </div>
+  <script type="module">
+    const $ = (id) => document.getElementById(id);
+    const state = { scenarios: [], selected: null };
+    function select(button) {
+      document.querySelectorAll('.nav-button').forEach((item) => item.removeAttribute('aria-current'));
+      button.setAttribute('aria-current', 'page');
+    }
+    function status(message, kind = '') { $('status').textContent = message; $('status').dataset.state = kind; }
+    function formatVariables(variables) {
+      return '{\n' + Object.entries(variables).map(([key, value]) => {
+        const compact = JSON.stringify(value);
+        const formatted = compact.length + key.length < 58 ? compact : JSON.stringify(value, null, 2).replaceAll('\n', '\n  ');
+        return `  ${JSON.stringify(key)}: ${formatted}`;
+      }).join(',\n') + '\n}';
+    }
+    function resetResponse() {
+      $('response').textContent = 'Selecciona los campos y ejecuta la operación.';
+      for (const id of ['bookReads', 'authorBatchReads', 'authorKeysLoaded']) $(id).textContent = '—';
+      status('Sin ejecutar');
+    }
+    function showScenario(scenario, button) {
+      state.selected = scenario.id;
+      select(button); $('source-view').hidden = true; $('operation-view').hidden = false; $('run').hidden = false;
+      $('title').textContent = scenario.label; $('description').textContent = scenario.description;
+      $('operation-name').value = scenario.operationName; $('query').value = scenario.query;
+      $('variables').value = formatVariables(scenario.variables); resetResponse();
+    }
+    async function showSource(kind) {
+      const schema = kind === 'schema';
+      select($(schema ? 'show-schema' : 'show-implementation'));
+      $('source-view').hidden = false; $('operation-view').hidden = true; $('run').hidden = true;
+      $('title').textContent = schema ? 'Un contrato para libros y autores' : 'Una carga por lote, por petición';
+      $('description').textContent = schema ? 'SDL real del servicio. El cliente elige los campos y puede recorrer Book → Author.' : 'Implementación real: DataLoader agrupa claves y conserva una caché solo durante esta petición.';
+      $('source-help').textContent = schema ? '! significa no nulo. summary y bio pueden ser null. Las queries y mutations están descritas en el contrato.' : 'Al listar varios libros, sus autores se consultan juntos. Sin seleccionar author, no se ejecuta la carga.';
+      $('source-code').textContent = 'Cargando código del servicio…';
+      try { const response = await fetch(schema ? '/schema.graphql' : '/implementation.ts'); if (!response.ok) throw new Error('No se pudo leer el código'); $('source-code').textContent = await response.text(); $('source-code').scrollTop = 0; }
+      catch (error) { $('source-code').textContent = error.message; }
+    }
+    $('show-schema').addEventListener('click', () => showSource('schema'));
+    $('show-implementation').addEventListener('click', () => showSource('implementation'));
+    $('run').addEventListener('click', async () => {
+      resetResponse();
+      let variables;
+      try { variables = JSON.parse($('variables').value); }
+      catch { status('JSON inválido', 'error'); $('response').textContent = 'Las variables deben ser un objeto JSON válido.'; return; }
+      $('run').disabled = true; status('Ejecutando…');
+      try {
+        const response = await fetch('/graphql', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ operationName: $('operation-name').value, query: $('query').value, variables }) });
+        const payload = await response.json(); $('response').textContent = JSON.stringify(payload, null, 2); $('response').scrollTop = 0;
+        status(`HTTP ${response.status} · ${payload.errors ? 'Error controlado' : 'Completado'}`, payload.errors ? 'error' : 'success');
+        for (const id of ['bookReads', 'authorBatchReads', 'authorKeysLoaded']) $(id).textContent = payload.extensions?.dataAccess?.[id] ?? '—';
+      } catch { status('Error de conexión', 'error'); $('response').textContent = 'No se pudo conectar con el servidor. Verifica que siga ejecutándose.'; }
+      finally { $('run').disabled = false; }
+    });
+    try {
+      const response = await fetch('/examples/scenarios.json'); if (!response.ok) throw new Error('No se pudieron cargar las operaciones');
+      state.scenarios = await response.json();
+      for (const scenario of state.scenarios) { const button = document.createElement('button'); button.className = 'nav-button'; button.id = `scenario-${scenario.id}`; button.textContent = scenario.label; button.addEventListener('click', () => showScenario(scenario, button)); $('scenarios').append(button); }
+      await showSource('schema');
+    } catch (error) { $('title').textContent = 'No se pudo cargar el laboratorio'; $('description').textContent = error.message; }
+  </script>
+</body>
+</html>

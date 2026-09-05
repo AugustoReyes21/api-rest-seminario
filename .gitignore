@@ -6,3 +6,14 @@ dist/
 coverage/
 *.log
 .DS_Store
+
+# Material audiovisual exclusivamente local
+local-video/
+demo/
+artifacts/
+*.mp4
+*.webm
+*.mov
+*.mkv
+.npm-cache/
+graphql/.npm-cache/

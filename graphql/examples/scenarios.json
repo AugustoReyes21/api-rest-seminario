@@ -1,0 +1,66 @@
+[
+  {
+    "id": "detail",
+    "label": "Libro por identificador",
+    "description": "El cliente solicita únicamente título, estado y nombre del autor de un libro.",
+    "operationName": "ConsultarLibro",
+    "query": "query ConsultarLibro($id: ID!) {\n  book(id: $id) {\n    title\n    status\n    author { name }\n  }\n}",
+    "variables": { "id": "b1" }
+  },
+  {
+    "id": "list",
+    "label": "Colección, filtro y relación",
+    "description": "La colección filtra libros disponibles, limita la página y carga sus autores en un solo lote.",
+    "operationName": "ListarLibros",
+    "query": "query ListarLibros(\n  $filter: BookFilterInput\n  $page: PageInput\n) {\n  books(filter: $filter, page: $page) {\n    items { id title author { name } }\n    pageInfo {\n      page pageSize totalItems\n      totalPages hasNextPage\n    }\n  }\n}",
+    "variables": { "filter": { "status": "AVAILABLE" }, "page": { "page": 1, "pageSize": 3 } }
+  },
+  {
+    "id": "create",
+    "label": "Crear un libro",
+    "description": "Una entrada tipada crea un libro disponible y permite seleccionar su autor en la misma respuesta.",
+    "operationName": "CrearLibro",
+    "query": "mutation CrearLibro($input: CreateBookInput!) {\n  createBook(input: $input) {\n    id\n    title\n    status\n    author { name }\n  }\n}",
+    "variables": { "input": { "title": "Lecturas para compartir", "summary": "Lecturas de la biblioteca.", "authorId": "a1" } }
+  },
+  {
+    "id": "update",
+    "label": "Cambiar el estado",
+    "description": "El enum impide estados arbitrarios; esta operación registra el préstamo del libro b1.",
+    "operationName": "CambiarEstado",
+    "query": "mutation CambiarEstado($id: ID!, $status: BookStatus!) {\n  updateBookStatus(id: $id, status: $status) {\n    id\n    title\n    status\n  }\n}",
+    "variables": { "id": "b1", "status": "BORROWED" }
+  },
+  {
+    "id": "invalid",
+    "label": "Entrada inválida",
+    "description": "Un título compuesto por espacios devuelve BAD_USER_INPUT sin crear un registro.",
+    "operationName": "CrearLibroInvalido",
+    "query": "mutation CrearLibroInvalido($input: CreateBookInput!) {\n  createBook(input: $input) { id title }\n}",
+    "variables": { "input": { "title": "   ", "authorId": "a1" } }
+  },
+  {
+    "id": "limit",
+    "label": "Límite de página",
+    "description": "Solicitar 21 elementos supera el máximo de 20 y produce un error de validación.",
+    "operationName": "ComprobarLimite",
+    "query": "query ComprobarLimite($page: PageInput) {\n  books(page: $page) {\n    items { id title }\n    pageInfo { pageSize }\n  }\n}",
+    "variables": { "page": { "page": 1, "pageSize": 21 } }
+  },
+  {
+    "id": "missing",
+    "label": "Recurso inexistente",
+    "description": "Un identificador válido sin libro asociado devuelve NOT_FOUND y book: null.",
+    "operationName": "ConsultarInexistente",
+    "query": "query ConsultarInexistente($id: ID!) {\n  book(id: $id) { id title }\n}",
+    "variables": { "id": "b999" }
+  },
+  {
+    "id": "no-relation",
+    "label": "Selección sin autor",
+    "description": "Si el cliente omite author, el acceso a autores es cero; se observa en extensions.dataAccess.",
+    "operationName": "ListarSoloTitulos",
+    "query": "query ListarSoloTitulos($page: PageInput) {\n  books(page: $page) {\n    items { id title }\n    pageInfo { totalItems }\n  }\n}",
+    "variables": { "page": { "page": 1, "pageSize": 3 } }
+  }
+]

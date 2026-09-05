@@ -1,4 +1,31 @@
-# API REST de pedidos
+# Seminario: GraphQL y REST en TypeScript
+
+## Entrega GraphQL: biblioteca
+
+El servicio GraphQL está en [`graphql/`](graphql/README.md). Incluye libros relacionados con autores, esquema SDL, queries y mutations con variables, validación, errores seguros, paginación limitada y DataLoader por petición para evitar N+1.
+
+```bash
+cd graphql
+npm ci
+npm run dev
+```
+
+Abre **http://127.0.0.1:4000** para usar el cliente de demostración, o **http://127.0.0.1:4000/graphql** para GraphiQL.
+
+```bash
+npm test
+npm run build
+npm run demo
+```
+
+- [Instalación, decisiones, evidencias y comparación con REST](graphql/README.md)
+- [Esquema público GraphQL](graphql/schema.graphql)
+- [Operaciones con nombres y variables](graphql/examples/scenarios.json)
+- [Pruebas de aceptación](graphql/tests)
+
+La implementación REST anterior se conserva a continuación y funciona de manera independiente desde la raíz del repositorio.
+
+## API REST de pedidos (entrega anterior)
 
 Proyecto académico en TypeScript que demuestra semántica HTTP, validación, errores consistentes, consultas de colección, contrato OpenAPI 3.2 e idempotencia explícita en `POST`.
 
